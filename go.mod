@@ -1,4 +1,4 @@
-module Gapp
+module github.com/venuyeredla/pan-services
 
 go 1.23.0
 

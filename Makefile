@@ -5,7 +5,7 @@ Run:
 	go run Application.go
 
 Build:
-	go bulid
+	go build -o gapp Application.go
 
 BuildIMG:
 	docker build . -t goapp:latest

@@ -1,5 +1,5 @@
-# GoProject
-Implementing all data storage systems like RDBMS,NOSQL,Information Retrieval as POC.
+# Pan-services
+Practical implementations of data storage systems like RDBMS,NOSQL,Information Retrieval as POC. In addition wiritng golan based micro services systems.
 
 # Data managment
     Data integrity (CRC, checksums), Security(Encryption/decryption), encoding/decoding(XML,JSON,AVRO,Thrift,Protocol) and compresssion are imiportant aspects to be consider either storing to disk or transferring over network.
@@ -87,3 +87,17 @@ minikube  service goapp-deployment
 
 
 kubectl describe pod goapp-deployment-6995c466fd-5jkbk
+
+
+
+# Docker compose commands 
+  $> docker compose <command> <option>
+
+   *Option*
+        up -d   Create and start containers.
+        down    Stop and remove containers. 
+        stop    Stop services
+        start   Start services 
+ *docker compose start <service_name>
+
+docker compose stop*
