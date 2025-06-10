@@ -1,5 +1,0 @@
-Learing go language is good for futuure.Written by random write.
-
-
-
-Authorization: Bearer 
