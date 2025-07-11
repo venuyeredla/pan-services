@@ -1,8 +1,13 @@
-Hello :
-	echo "Hello Gapp"
+.PHONY: start-services stop-services 
+
+start-services:
+	docker compose start -f ./deployment/docker-compose.yaml
+
+stop-services:
+	docker compose stop -f ./deployment/docker-compose.yaml
 
 Run:
-	go run Application.go
+	go run main.go
 
 Build:
 	go build -o gapp Application.go

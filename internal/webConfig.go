@@ -60,10 +60,16 @@ func ApplicationConfig() *gin.Engine {
 
 	router := gin.Default()
 
-	//Static file handler
-	router.StaticFS("/web/", http.Dir("web/"))
-	router.StaticFile("/", "web/index.html")
+	//router.Group(API_CONTEXT)
 
+	//Static file handler
+	router.StaticFile("/", "web/index.html")
+	router.StaticFS("/static/", http.Dir("web/static/"))
+
+	sc := &handlers.StatiContent{}
+	//sc.Preprocess()
+	router.LoadHTMLGlob("web/templates/*")
+	router.GET("/tmpl", Logging(sc.GenrateForm))
 	/*router.Static("/assets", "./assets")
 	router.StaticFile("/favicon.ico", "./resources/favicon.ico")
 	router.StaticFileFS("/more_favicon.ico", "more_favicon.ico", http.Dir("my_file_system"))
@@ -78,11 +84,6 @@ func ApplicationConfig() *gin.Engine {
 
 	router.GET("/chat", handlers.WebChat)
 
-	//Generating entitre HTML using libraries
-	sc := &handlers.StatiContent{}
-	//sc.Preprocess()
-	router.LoadHTMLGlob("web/*")
-	router.GET("/tmpl", Logging(sc.GenrateForm))
 	return router
 }
 
