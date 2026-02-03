@@ -25,7 +25,7 @@ func Sort(input []int, algo Salgo) {
 	length := len(input)
 	switch algo {
 	case Bubble:
-		for i := 0; i < length; i++ {
+		for i := range length {
 			for j := 0; j < length-i-1; j++ {
 				if input[j] > input[j+1] {
 					input[j], input[j+1] = input[j+1], input[j]
@@ -34,7 +34,7 @@ func Sort(input []int, algo Salgo) {
 		}
 
 	case Selection:
-		for i := 0; i < length; i++ {
+		for i := range length {
 			minIdx := i
 			for j := i + 1; j < length; j++ {
 				if input[minIdx] > input[j] {
@@ -60,8 +60,6 @@ func Sort(input []int, algo Salgo) {
 			}
 
 		}
-	case Heap:
-		fmt.Println("Need to be implmented")
 
 	case Quick:
 		QuickSort(input, 0, len(input)-1)
@@ -74,7 +72,7 @@ func Sort(input []int, algo Salgo) {
 func QuickSort(input []int, left, right int) {
 	if left < right {
 		pivot := getPivot(input, left, right)
-		fmt.Printf("Left=[%v, %v], Right=[%v,%v] \n", left, pivot-1, pivot+1, right)
+		fmt.Printf("QuickSort Left=[%v, %v], Right=[%v,%v] \n", left, pivot-1, pivot+1, right)
 		QuickSort(input, left, pivot-1)
 		QuickSort(input, pivot+1, right)
 	}
@@ -281,4 +279,35 @@ func Jump(nums []int) bool {
 		}
 	}
 	return temp[0]
+}
+
+// Sorted array
+func removeDuplicates(input []int) {
+	i := 0
+	for j := 1; j < len(input); j++ {
+		if input[j] != input[i] {
+			i = i + 1
+			input[i] = input[j]
+		}
+	}
+	i++
+	for ; i < len(input); i++ {
+		input[i] = -1
+	}
+}
+
+// {1, 2, 0, 0, 0, 3, 6};
+// Method-1 : whenever zero element move all next elements to before then place zero at the end.
+// Method-2 : Counting zeros and moving next nonzero elemnt
+func MovallZeros(a []int) {
+	widx := -1
+	for i := 0; i < len(a); i++ {
+		if a[i] != 0 {
+			widx += 1
+			a[widx] = a[i]
+		}
+	}
+	for widx += 1; widx < len(a); widx++ {
+		a[widx] = 0
+	}
 }

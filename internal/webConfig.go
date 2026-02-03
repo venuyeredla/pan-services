@@ -53,6 +53,7 @@ func ApiPath(uri string) string {
 }
 
 func ApplicationConfig() *gin.Engine {
+
 	log.Println("Setting up file server and api handlers")
 
 	repository.IntializePool()

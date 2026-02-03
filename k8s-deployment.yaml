@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goapp-deployment
+  labels:
+    app : goapp
+spec:
+  selector:
+    matchLabels:
+      app: goapp
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: goapp
+    spec:
+      containers:
+      - name: goapp
+        image: goapp:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 2024

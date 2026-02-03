@@ -1,7 +1,9 @@
 .PHONY: start-services stop-services 
 
 start-services:
-	docker compose start -f ./deployment/docker-compose.yaml
+	cd ./deployment
+	docker compose start
+	cd .. 
 
 stop-services:
 	docker compose stop -f ./deployment/docker-compose.yaml

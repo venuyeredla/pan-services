@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/venuyeredla/pan-services/pkg/dsa/utils"
 	. "github.com/venuyeredla/pan-services/pkg/dsa/utils"
 )
 
@@ -14,10 +15,10 @@ func TestSortBsearch(t *testing.T) {
 	sortAlgos := []Salgo{Bubble, Selection, Insertion, Merge, Quick}
 	fmt.Println("Sorting and applying binary search")
 	for _, algo := range sortAlgos {
-		C := make([]int, len(input))
-		copy(C, input)
-		Sort(C, algo)
-		result, msg := AssertEquals(expected, C, false)
+		forged := make([]int, len(input))
+		copy(forged, input)
+		Sort(forged, algo)
+		result, msg := AssertEquals(expected, forged, false)
 		if !result {
 			t.Errorf("Failed Algorithm : %v Error MSG=%v ", algo, msg)
 			break
@@ -49,4 +50,36 @@ func TestRotation(t *testing.T) {
 	fmt.Println(arr) */
 	arr := []int{2, 0}
 	Jump(arr)
+}
+
+func TestRemoveDuplicates(t *testing.T) {
+
+	inputs := [][]int{
+		/*{1, 2, 2, 3, 4, 4, 5},
+		{1, 1, 1, 1, 1},
+		{1, 2, 3, 4, 5}, */
+		{2, 3, 5, 5, 7, 11, 11, 11, 13},
+	}
+
+	for _, input := range inputs {
+		expected := make([]int, len(input))
+		copy(expected, input)
+		removeDuplicates(expected)
+		result, msg := utils.AssertEquals(expected, input, false)
+		if !result {
+			t.Errorf(msg)
+			t.Fail()
+		}
+	}
+}
+func TestMoveAllzeros(t *testing.T) {
+	arr := []int{1, 0, 2, 0, 0, 3}
+	expected := []int{1, 2, 3, 0, 0, 0}
+	MovallZeros(arr)
+	result, msg := utils.AssertEquals(expected, arr, false)
+	if !result {
+		t.Errorf(msg)
+		t.Fail()
+	}
+
 }
