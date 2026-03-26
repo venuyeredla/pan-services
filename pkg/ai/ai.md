@@ -1,6 +1,6 @@
 # AI Maths
 	
-    The function which is to be optimized is called objective function. It also may be called as cost function, loss function or error function. 
+The function which is to be optimized is called objective function. It also may be called as cost function, loss function or error function. 
 
 Local minimum and local maximum .
 

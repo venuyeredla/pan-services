@@ -1,5 +1,5 @@
 http: 
-  port : 2024
+  port : 2026
   host : "http://localhost"
   read_timeout: 30
   write_timeout: 30

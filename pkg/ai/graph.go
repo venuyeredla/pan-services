@@ -4,9 +4,9 @@ import "fmt"
 
 func Graph(inputs [][]int) {
 
-	matrix := NewMatrix(10, 10, 0)
+	matrix := NewTensor(10, 10, 0)
 	for _, value := range inputs {
-		matrix.Set(10-value[0], 10-value[1], 1)
+		matrix.Data[10-value[0]][10-value[1]] = 1
 	}
 
 	fmt.Print("Graph : \n")
@@ -21,7 +21,7 @@ func Graph(inputs [][]int) {
 		}
 		fmt.Printf("\n|%v\n", 10-i)
 	}
-	for i := 0; i < matrix.Shape().Cols; i++ {
+	for i := 0; i < matrix.Columns(); i++ {
 		fmt.Printf("%v---", i)
 	}
 	fmt.Print("\n")

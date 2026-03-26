@@ -4,98 +4,28 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"math/rand"
-	"time"
 )
-
-type Mode interface {
-	train()
-	predict()
-}
-
-type Vector struct {
-	Data []float32
-}
-
-type Matrix struct {
-	Data [][]float32
-}
-
-// Tensor of size 3
-type Tensor struct {
-	Data [][][]float32
-}
-
-/*
-length : length of vector
-defa : default value
-*/
-func NewVector(length int, defa ...float32) *Vector {
-	vec := make([]float32, length)
-
-	if len(defa) > 0 {
-		for i := 0; i < length; i++ {
-			vec[i] = defa[0]
-		}
-	}
-
-	return &Vector{Data: vec}
-}
-
-func (vector *Vector) Initialize(defa float32) {
-	length := vector.Shape().Cols
-	for i := 0; i < length; i++ {
-		vector.Data[i] = defa
-	}
-}
-
-func (vector *Vector) Set(i int, v float32) bool {
-	vector.Data[i] = v
-	return true
-}
-
-func (vector *Vector) Get(i int) float32 {
-	return vector.Data[i]
-}
 
 type Shape struct {
 	Rows int
 	Cols int
 }
 
-func (vector *Vector) Shape() Shape {
-	return Shape{Rows: 1, Cols: len(vector.Data)}
+type TensorInterface interface {
+	Shape()
+	Print()
+	Vector()
 }
 
-func (vector *Vector) Print() {
-	fmt.Printf("Vector : %v \n", vector.Shape())
-	fmt.Println(vector.Data)
-	fmt.Print("\n")
+// Tensor of size 3
+type Tensor struct {
+	Data  [][]float32
+	Shape Shape
 }
 
-// Slices are alway one dimensional
-func RowVector(length uint) *Matrix {
-	return NewMatrix(1, 5)
-}
-
-func ColVector(length uint) *Matrix {
-	return NewMatrix(5, 1)
-}
-
-func (matrix *Matrix) Shape() Shape {
-	return Shape{Rows: len(matrix.Data), Cols: len(matrix.Data[0])}
-}
-
-func (matrix *Matrix) Print() {
-	fmt.Printf("Matrix : %v \n", matrix.Shape())
-	for _, row := range matrix.Data {
-		fmt.Println(row)
-	}
-	fmt.Print("\n")
-}
-
-func NewMatrix(rows int, columns int, defa ...float32) *Matrix {
-	var matrix [][]float32 = make([][]float32, rows)
+func NewTensor(rows, columns int, defa ...float32) *Tensor {
+	var tensor [][]float32
+	tensor = make([][]float32, rows)
 	for i := 0; i < rows; i++ {
 		vector := make([]float32, columns)
 		if len(defa) > 0 {
@@ -103,65 +33,88 @@ func NewMatrix(rows int, columns int, defa ...float32) *Matrix {
 				vector[j] = defa[0]
 			}
 		}
-		matrix[i] = vector
+		tensor[i] = vector
 	}
-	return &Matrix{Data: matrix}
+	return &Tensor{Data: tensor, Shape: Shape{Rows: rows, Cols: columns}}
 }
 
-func (matrix *Matrix) Init(defa float32) {
-	shape := matrix.Shape()
-	rand.Seed(time.Now().UnixMilli())
-	for row := 0; row < shape.Rows; row++ {
-		for col := 0; col < shape.Cols; col++ {
-			matrix.Data[row][col] = defa
-		}
+func NewVector(dim int, defa ...float32) *Tensor {
+	if len(defa) > 0 {
+		return NewTensor(1, dim, defa[0])
 	}
+	return NewTensor(1, dim)
 }
 
-func (matrix *Matrix) Set(i, j int, v float32) bool {
-	matrix.Data[i][j] = v
-	return true
+func (tesnor *Tensor) Vector() []float32 {
+	return tesnor.Vector()
 }
 
-func (matrix *Matrix) Get(i, j int) float32 {
-	return matrix.Data[i][j]
+func (tesnor *Tensor) SetVectorX(pos int, val float32) {
+	tesnor.Vector()[pos] = val
 }
 
-func GenTensor(size, rows, columns int) *Tensor {
-	var tensor [][][]float32
-	tensor = make([][][]float32, size)
-	rand.Seed(time.Now().UnixMilli())
-	for i := 0; i < size; i++ {
-		var matix = make([][]float32, rows)
-		for j := 0; j < rows; j++ {
-			vector := make([]float32, columns)
-			for k := 0; k < columns; k++ {
-				vector[j] = rand.Float32()
-			}
-			matix[j] = vector
-		}
-		tensor[i] = matix
-	}
-	return &Tensor{Data: tensor}
+func (tesnor *Tensor) SetXY(row int, col int, val float32) {
+	tesnor.Data[row][col] = val
 }
 
-func (tensor *Tensor) PrintTensor() {
+func (tensor *Tensor) Print() {
 	fmt.Printf("Tensor: [\n")
-	for _, matrix := range tensor.Data {
-		for _, row := range matrix {
-			fmt.Println(row)
-		}
+	for _, rowVector := range tensor.Data {
+		fmt.Println(rowVector)
 		fmt.Printf("\n")
 	}
 	fmt.Print("]")
 }
 
+func (tensor *Tensor) Rows() int {
+	return tensor.Shape.Rows
+}
+
+func (tensor *Tensor) Columns() int {
+	return tensor.Shape.Cols
+}
+
+func (tensorA *Tensor) VectorDotProduct(b *Tensor) float32 {
+	if tensorA.Columns() == b.Columns() {
+		var scalar float32 = 0.0
+		for i := 0; i < tensorA.Columns(); i++ {
+			scalar = scalar + tensorA.Vector()[i]*b.Vector()[i]
+		}
+		return scalar
+	}
+	return 0.0
+}
+
+func (matrix *Tensor) Transform(vector *Tensor) (*Tensor, error) {
+	if matrix.Columns() == vector.Shape.Cols {
+		var c []float32 = make([]float32, matrix.Shape.Rows)
+		for i := 0; i < matrix.Rows(); i++ {
+			row := matrix.Data[i]
+			var scalar float32 = 0.0
+			for j, val := range row {
+				scalar = scalar + val*vector.Vector()[j]
+			}
+			c[i] = scalar
+		}
+		return &Tensor{Data: [][]float32{c}, Shape: Shape{Rows: 1, Cols: matrix.Shape.Rows}}, nil
+	} else {
+		errorMsg := fmt.Sprintf("Invalid shapes for multiliplcaiton a=%v, b=%v", matrix.Rows(), vector.Columns())
+		return &Tensor{}, errors.New(errorMsg)
+	}
+}
+
+type Mode interface {
+	train()
+	predict()
+}
+
 // d=sqrt(( pow(x2-x1,2) + pow(y2-y1,1,2))
-func Distance(a, b Vector) float32 {
-	if a.Shape() == b.Shape() {
+func Distance(a, b Tensor) float32 {
+	if len(a.Vector()) == len(b.Vector()) {
 		var defsquare float64 = 0.0
-		for i := 0; i < a.Shape().Cols; i++ {
-			defsquare = math.Pow(float64(a.Data[i]-b.Data[i]), 2)
+
+		for i := 0; i < a.Shape.Cols; i++ {
+			defsquare = math.Pow(float64(a.Vector()[i]-b.Vector()[i]), 2)
 		}
 		distance := math.Sqrt(defsquare)
 		return float32(distance)
@@ -173,54 +126,26 @@ func MatrixAdd(a [][]int, b [][]int) {
 
 }
 
-func VectorDotProduct(a, b *Vector) float32 {
-	if a.Shape() == b.Shape() {
-		var scalar float32 = 0.0
-		for i := 0; i < a.Shape().Cols; i++ {
-			scalar = scalar + a.Data[i]*b.Data[i]
-		}
-		return scalar
-	}
-	return 0.0
-}
-
-func Transform(a *Matrix, b *Vector) (*Vector, error) {
-	if a.Shape().Cols == b.Shape().Cols {
-		var c []float32 = make([]float32, a.Shape().Rows)
-		for i := 0; i < a.Shape().Rows; i++ {
-			row := a.Data[i]
-			var scalar float32 = 0.0
-			for i, val := range row {
-				scalar = scalar + val*b.Data[i]
-			}
-			c[i] = scalar
-		}
-		return &Vector{Data: c}, nil
-	} else {
-		errorMsg := fmt.Sprintf("Invalid shapes for multiliplcaiton a=%v, b=%v", a.Shape(), b.Shape())
-		return &Vector{}, errors.New(errorMsg)
-	}
-}
-
-func MatrixMultiplication(a, b *Matrix) (*Matrix, error) {
-	if a.Shape().Cols == b.Shape().Rows {
-		cRows := a.Shape().Rows
-		cCols := b.Shape().Cols
+func MatrixMultiplication(a, b *Tensor) (*Tensor, error) {
+	if a.Columns() == b.Rows() {
+		cRows := a.Rows()
+		cCols := b.Columns()
 		var c [][]float32 = make([][]float32, cRows)
 		for i := 0; i < cRows; i++ {
 			c[i] = make([]float32, cCols)
 			for j := 0; j < cCols; j++ {
 				var cij float32 = 0.0
-				for k := 0; k < len(a.Data[0]); k++ {
+				for k := 0; k < len(a.Vector()); k++ {
 					cij = cij + a.Data[i][k]*b.Data[k][j]
 				}
 				c[i][j] = cij
 			}
 		}
-		return &Matrix{Data: c}, nil
+		return &Tensor{Data: c, Shape: Shape{Rows: cRows, Cols: cCols}}, nil
 	} else {
-		errorMsg := fmt.Sprintf("Invalid shapes for multiliplcaiton a=%v, b=%v", a.Shape(), b.Shape())
+		errorMsg := fmt.Sprintf("Invalid shapes for multiliplcaiton a=%v, b=%v", a.Rows(), b.Columns())
 		return nil, errors.New(errorMsg)
+
 	}
 
 }

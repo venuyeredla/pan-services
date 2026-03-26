@@ -13,24 +13,24 @@ func AssertTrue(t *testing.T, actual, expected float32) {
 
 func TestVector(t *testing.T) {
 	//t.Skip()
-	cVector := ColVector(5)
+	cVector := NewVector(5)
 	cVector.Print()
 	a := NewVector(3, 2.0)
 	b := NewVector(3, 2.0)
 	a.Print()
 	b.Print()
-	scalar := VectorDotProduct(a, b)
+	scalar := a.VectorDotProduct(b)
 	AssertTrue(t, scalar, 12)
 }
 
 func TestVectorTransformation(t *testing.T) {
 
-	A := NewMatrix(5, 2, 2.0)
+	A := NewTensor(5, 2, 2.0)
 	b := NewVector(2, 2.0)
 	A.Print()
 	b.Print()
 
-	cMatrix, error := Transform(A, b)
+	cMatrix, error := A.Transform(b)
 	if error == nil {
 		cMatrix.Print()
 	} else {
@@ -39,8 +39,8 @@ func TestVectorTransformation(t *testing.T) {
 }
 
 func TestMatrixMuliplication(t *testing.T) {
-	A := NewMatrix(5, 2, 2.0)
-	B := NewMatrix(2, 1, 2.0)
+	A := NewTensor(5, 2, 2.0)
+	B := NewTensor(2, 1, 2.0)
 	A.Print()
 	B.Print()
 	cMatrix, error := MatrixMultiplication(A, B)

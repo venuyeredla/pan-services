@@ -33,10 +33,10 @@ func TestLinearClassifier(t *testing.T) {
 	lm := LinearModel{}
 	lm.train(inputs, targets)
 	for i, value := range inputs {
-		predicted := lm.pridict(value)
+		predicted := lm.Predict(value)
 		fmt.Printf("Expected = % v and predicted = %v \n", targets[i], predicted)
 	}
 
-	predicted := lm.pridict([]int{5, 2})
+	predicted := lm.Predict([]int{5, 2})
 	fmt.Printf(" New value Expected = % v and predicted = %v \n", -1, predicted)
 }

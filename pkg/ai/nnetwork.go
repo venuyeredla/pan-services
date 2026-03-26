@@ -6,54 +6,54 @@ import (
 )
 
 func NuralNetwork() {
-	A := NewMatrix(3, 3, 2.0)
-	A.Set(0, 0, 0.9)
-	A.Set(0, 1, 0.3)
-	A.Set(0, 2, 0.4)
-	A.Set(1, 0, 0.2)
-	A.Set(1, 1, 0.8)
-	A.Set(1, 2, 0.2)
-	A.Set(2, 0, 0.1)
-	A.Set(2, 1, 0.5)
-	A.Set(2, 2, 0.6)
+	A := NewTensor(3, 3, 2.0)
+	A.SetXY(0, 0, 0.9)
+	A.SetXY(0, 1, 0.3)
+	A.SetXY(0, 2, 0.4)
+	A.SetXY(1, 0, 0.2)
+	A.SetXY(1, 1, 0.8)
+	A.SetXY(1, 2, 0.2)
+	A.SetXY(2, 0, 0.1)
+	A.SetXY(2, 1, 0.5)
+	A.SetXY(2, 2, 0.6)
 
 	b := NewVector(3, 2.0)
-	b.Set(0, 0.9)
-	b.Set(1, 0.1)
-	b.Set(2, 0.8)
+	b.SetVectorX(0, 0.9)
+	b.SetVectorX(1, 0.1)
+	b.SetVectorX(2, 0.8)
 	A.Print()
 	b.Print()
 
-	c, e := Transform(A, b)
+	c, e := A.Transform(b)
 	if e == nil {
 		c.Print()
 	}
-	for i, val := range c.Data {
+	for i, val := range c.Vector() {
 		y := SigMoid(val)
-		c.Set(i, float32(y))
+		c.SetVectorX(i, float32(y))
 	}
 
 	fmt.Println("Activatin neurons")
 	c.Print()
 
-	H := NewMatrix(3, 3, 2.0)
-	H.Set(0, 0, 0.3)
-	H.Set(0, 1, 0.7)
-	H.Set(0, 2, 0.5)
-	H.Set(1, 0, 0.6)
-	H.Set(1, 1, 0.5)
-	H.Set(1, 2, 0.2)
-	H.Set(2, 0, 0.8)
-	H.Set(2, 1, 0.1)
-	H.Set(2, 2, 0.9)
+	H := NewTensor(3, 3, 2.0)
+	H.SetXY(0, 0, 0.3)
+	H.SetXY(0, 1, 0.7)
+	H.SetXY(0, 2, 0.5)
+	H.SetXY(1, 0, 0.6)
+	H.SetXY(1, 1, 0.5)
+	H.SetXY(1, 2, 0.2)
+	H.SetXY(2, 0, 0.8)
+	H.SetXY(2, 1, 0.1)
+	H.SetXY(2, 2, 0.9)
 
-	c, e = Transform(H, c)
+	c, e = H.Transform(c)
 	if e == nil {
 		c.Print()
 	}
-	for i, val := range c.Data {
+	for i, val := range c.Vector() {
 		y := SigMoid(val)
-		c.Set(i, float32(y))
+		c.SetVectorX(i, float32(y))
 	}
 
 	fmt.Println("Activatin neurons")
